@@ -1,0 +1,4 @@
+ACCESS_KEY_ID=<place access key id here>
+ACCESS_SECRET_KEY=<place secret access key id here>
+BUCKET_NAME=kesavabucket
+FIRST_FILE1=Recording

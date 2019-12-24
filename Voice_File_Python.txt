@@ -1,0 +1,72 @@
+import boto3
+from botocore.client import Config
+
+import time
+import os
+
+datestr = time.strftime("%Y%m%d")
+
+import re
+
+ACCESS_KEY_ID = ' '
+ACCESS_SECRET_KEY = ' '
+BUCKET_NAME = ' '
+def processing_file():
+    with open('C:\\Users\\kotloc\\Documents\\Sound recordings\\ConfigFile.txt', 'r') as f:
+       for line in f:
+           filedata = line
+           keyID = re.split('=', filedata)
+           if keyID[0] == 'ACCESS_KEY_ID':
+               ACCESS_KEY_ID = keyID[1].rstrip("\n")
+           elif keyID[0] == 'ACCESS_SECRET_KEY':
+               ACCESS_SECRET_KEY = keyID[1].rstrip("\n")
+           elif keyID[0] == 'BUCKET_NAME':
+               BUCKET_NAME = keyID[1].rstrip("\n")
+           elif keyID[0] == 'FIRST_FILE1':
+               FIRST_FILE1 = keyID[1].rstrip("\n")
+           elif keyID[0] == 'FIRST_FILE2':
+               FIRST_FILE2 = keyID[1].rstrip("\n")
+           elif keyID[0] == 'FIRST_FILE3':
+               FIRST_FILE3 = keyID[1].rstrip("\n")
+           elif keyID[0] == 'FIRST_FILE4':
+               FIRST_FILE4 = keyID[1].rstrip("\n")
+           elif keyID[0] == 'FIRST_FILE5':
+               FIRST_FILE5 = keyID[1].rstrip("\n")
+           elif keyID[0] == 'FIRST_FILE6':
+               FIRST_FILE6 = keyID[1].rstrip("\n")
+
+    print('BUCKET IS', BUCKET_NAME)
+
+    print('FILE NAME1 IS', FIRST_FILE1)
+    if os.path.exists('C:\\Users\\kotloc\\Documents\\Sound recordings\\%s.m4a' % FIRST_FILE1):
+       data = open('C:\\Users\\kotloc\\Documents\\Sound recordings\\%s.m4a' % FIRST_FILE1, 'r')
+    else:
+        return None
+
+    s3 = boto3.resource(
+        's3',
+       aws_access_key_id=ACCESS_KEY_ID,
+       aws_secret_access_key=ACCESS_SECRET_KEY,
+       config=Config(signature_version='s3v4')
+                    )
+
+    filenew1 = str(FIRST_FILE1 + datestr + '.mp4')
+    print('it came until here..')
+
+    s3.Object(BUCKET_NAME,'%s' % filenew1).upload_file(Filename='C:\\Users\\kotloc\\Documents\\Sound recordings\\%s.m4a' % FIRST_FILE1)
+
+    print(filenew1, " sent successfully.")
+    data.close()
+    os.remove("C:\\Users\\kotloc\\Documents\\Sound recordings\\Recording.m4a")
+    print('file deleted successfully')
+    return None
+
+while 1:
+ processing_file()
+ time.sleep(10)
+ print('checking for the file again')
+ #processing_file()
+
+
+# print(filenew)
+# print (filenew, "NOT sent successfully.")
